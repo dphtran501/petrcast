@@ -25,10 +25,10 @@ fetch('weather', {
             iconTxt.textContent = dataPt.icon
 
             const highTempTxt = document.createElement('p')
-            highTempTxt.textContent = dataPt.temperatureHigh
+            highTempTxt.textContent = "High Temp.: " + dataPt.temperatureHigh
 
             const lowTempTxt = document.createElement('p')
-            lowTempTxt.textContent = dataPt.temperatureLow
+            lowTempTxt.textContent = "Low Temp.: " + dataPt.temperatureLow
 
             container.appendChild(card)
             card.appendChild(dateTxt)
