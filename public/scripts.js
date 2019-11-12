@@ -10,6 +10,7 @@ fetch('weather', {
         'Accept': 'application/json'
     }
 }).then(res => res.json()).then(data => {
+        setAlerts(data.alerts)
         var dailyBlock = data.daily
 
         dailyBlock.data.forEach(dataPt => {
@@ -37,3 +38,11 @@ fetch('weather', {
             card.appendChild(lowTempTxt)
         })
     })
+
+    function setAlerts(alerts){
+        if(alerts != null)
+        {
+            
+        }
+            
+    }
