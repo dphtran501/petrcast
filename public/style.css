@@ -3,6 +3,16 @@
     margin: 0 auto;
   }
   
+  body {
+    background: linear-gradient(to right, rgb(18, 149, 216), rgb(0, 100, 164));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
   .container {
     display: flex;
     flex-wrap: wrap;
@@ -45,4 +55,12 @@
   padding: 20px;
   border: 1px solid #888;
   width: 80%;
+}
+
+.slick-slide {
+  opacity: .5;
+}
+
+.slick-center {
+  opacity: 1;
 }

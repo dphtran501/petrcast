@@ -1,5 +1,9 @@
 const app = document.getElementById('root')
 
+const appLogo = document.createElement('h1')
+appLogo.setAttribute('class', 'app-logo')
+appLogo.textContent = "PetrCast"
+
 const alertDialog = document.createElement('div')
 alertDialog.setAttribute('class', 'alert-dialog')
 alertDialog.style.display = 'none'
@@ -16,13 +20,14 @@ const alertModal = document.createElement('div')
 alertModal.setAttribute('class', 'modal')
 alertModal.style.display = 'none'
 
+app.appendChild(appLogo)
 app.appendChild(alertDialog)
 app.appendChild(container)
 app.appendChild(darkskyAttribution)
 
 app.appendChild(alertModal)
 
-//fetch('testData.json', {        // Use for testing
+//fetch('testdata.json', {        // Use for testing
 fetch('weather', {            // Use for production
     method: 'GET',
     headers: {
@@ -30,78 +35,115 @@ fetch('weather', {            // Use for production
         'Accept': 'application/json'
     }
 }).then(res => res.json()).then(data => {
-        setAlerts(data.alerts)
-        var dailyBlock = data.daily
+       setWeatherData(data)
+})
 
-        dailyBlock.data.forEach(dataPt => {
-            // Create card
-            const card = document.createElement('div')
-            card.setAttribute('class', 'card')
+function setWeatherData(data){
+    setAlerts(data.alerts)
+    var dailyBlock = data.daily
 
-            const dateTxt = document.createElement('h1')
-            var dateObj = new Date(dataPt.time * 1000)
-            dateTxt.textContent = dateObj.toUTCString()
+    dailyBlock.data.forEach(dataPt => {
+        // Create card
+        const card = document.createElement('div')
+        card.setAttribute('class', 'card')
 
-            const iconTxt = document.createElement('p')
-            iconTxt.textContent = dataPt.icon
+        const dateTxt = document.createElement('h1')
+        dateTxt.textContent = convertDate(dataPt.time)
 
-            const highTempTxt = document.createElement('p')
-            highTempTxt.textContent = "High Temp.: " + dataPt.temperatureHigh
+        const icon = document.createElement('canvas')
+        icon.width = 100
+        icon.height = 100
+        const skycon = new Skycons({color: 'black'})
+        skycon.set(icon, dataPt.icon)
+        skycon.play()
 
-            const lowTempTxt = document.createElement('p')
-            lowTempTxt.textContent = "Low Temp.: " + dataPt.temperatureLow
+        /*const iconTxt = document.createElement('p')
+        iconTxt.textContent = dataPt.icon*/
 
-            container.appendChild(card)
-            card.appendChild(dateTxt)
-            card.appendChild(iconTxt)
-            card.appendChild(highTempTxt)
-            card.appendChild(lowTempTxt)
-        })
+        const highTempTxt = document.createElement('p')
+        highTempTxt.textContent = "High Temp.: " + dataPt.temperatureHigh
+
+        const lowTempTxt = document.createElement('p')
+        lowTempTxt.textContent = "Low Temp.: " + dataPt.temperatureLow
+
+        container.appendChild(card)
+        card.appendChild(dateTxt)
+        card.appendChild(icon)
+        //card.appendChild(iconTxt)
+        card.appendChild(highTempTxt)
+        card.appendChild(lowTempTxt)
+        
     })
 
-    function setAlerts(alerts){
-        if(alerts != null){
+    // Init slick carousel
+    $(document).ready(function(){
+        $('.container').slick({
+            centerMode: true,
+            centerPadding: '60px',
+            slidesToShow: 3,
+            dots: true,
+            infinite: false,
+            initialSlide: 0,
+            adaptiveHeight: true
+        });
+        });
+}
 
-            const alertModalContent = document.createElement('div')
-            alertModalContent.setAttribute('class', 'modal-content')
+function setAlerts(alerts) {
+    if(alerts != null) {
+        const alertModalContent = document.createElement('div')
+        alertModalContent.setAttribute('class', 'modal-content')
+        alerts.forEach(alert => {
+            // Add alert to alert dialog
+            const alertText = document.createElement('p')
+            alertText.textContent = alert.severity + ": " + alert.title
+            alertDialog.appendChild(alertText)
+
+            // Add alert to modal
             const alertTitle = document.createElement('h1')
-            alertTitle.textContent = alerts[0].title
+            alertTitle.textContent = alert.title
+            const alertIssued = document.createElement('h2')
+            alertIssued.textContent = "Issued: " + convertDate(alert.time)
+            const alertExpires = document.createElement('h2')
+            alertExpires.textContent = "Expires: " + convertDate(alert.expires)
             const alertDescription = document.createElement('p')
-            alertDescription.textContent = alerts[0].description
+            alertDescription.textContent = alert.description
             const alertLink = document.createElement('a')
-            alertLink.href = alerts[0].uri
+            alertLink.href = alert.uri
             alertLink.text = "See more details..."
             
             alertModalContent.appendChild(alertTitle)
+            alertModalContent.appendChild(alertIssued)
+            alertModalContent.appendChild(alertExpires)
             alertModalContent.appendChild(alertDescription)
             alertModalContent.appendChild(alertLink)
-
-            alertModal.appendChild(alertModalContent)
-            alertModal.style.display = 'block'
-
-            alerts.forEach(alert => {
-                const alertText = document.createElement('p')
-                alertText.textContent = alert.severity + ": " + alert.title
-                alertDialog.appendChild(alertText)
-            })
-            
-            alertDialog.style.display = "block"
-        }
-        else {
-            while(alertDialog.lastChild){
-                alertDialog.removeChild(alertDialog.lastChild)
-            }
-            while(alertModal.lastChild){
-                alertModal.removeChild(alertModal.lastChild)
-            }
-
-            alertModal.style.display = 'none'
-            alertDialog.style.display = "none"
-        }
+        })
+        
+        alertModal.appendChild(alertModalContent)
+        alertModal.style.display = 'block'
+        alertDialog.style.display = "block"
     }
-
-    window.onclick = function(event){
-        if (event.target == alertModal) {
-            alertModal.style.display = "none"
+    else {
+        while(alertDialog.lastChild){
+            alertDialog.removeChild(alertDialog.lastChild)
         }
+        while(alertModal.lastChild){
+            alertModal.removeChild(alertModal.lastChild)
+        }
+
+        alertModal.style.display = 'none'
+        alertDialog.style.display = "none"
     }
+}
+
+window.onclick = function(event){
+    if (event.target == alertModal) {
+        alertModal.style.display = "none"
+    }
+}
+
+// Converts and returns UNIX time (sec) into a Date string
+function convertDate(unixDate){
+    var dateObj = new Date(unixDate * 1000)
+    return dateObj.toLocaleString()
+}
