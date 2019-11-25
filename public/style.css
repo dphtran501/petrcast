@@ -1,7 +1,26 @@
 
 body {
-  background: linear-gradient(to right, rgb(18, 149, 216), rgb(0, 100, 164));
+  /*background: linear-gradient(to right, rgb(18, 149, 216), rgb(0, 100, 164));*/
   min-height: 100vh;
+}
+
+#title-header {
+  text-align: center;
+}
+
+#app-title {
+  font-family: 'Chewy', cursive;
+  font-size: 90px;
+  color: #1295D8;
+  margin: 30px 10px 0px 10px;
+}
+
+#app-subtitle {
+  font-family: 'Merriweather Sans', sans-serif;
+  font-size: 20px;
+  font-weight: normal;
+  color: #FFB511;
+  margin: 0px 10px 10px 10px;
 }
 
 .dialog {
@@ -21,8 +40,8 @@ body {
 
 .card {
   margin: 1rem;
-  border: 1px solid gray;
   text-align: center;
+  background-color: #1295D8;
 }
 
 @media screen and (min-width: 600px) {
@@ -37,9 +56,43 @@ body {
   }
 }
 
-.weather-icon {
-  width: 100;
-  height: 100;
+.card-data {
+  font-family: 'Merriweather Sans', sans-serif;
+  font-size: 23px;
+  font-weight: normal;
+  color: white;
+}
+
+.card-day {
+  font-family: 'Chewy', cursive;
+  font-size: 45px;
+  font-weight: normal;
+  color: #FFB511;
+}
+
+.temp-block {
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+}
+
+.temp-block-item {
+  margin: 20px;
+}
+
+.more-info-btn {
+  background: none;
+  border: none;
+  font-family: 'Chewy', cursive;
+  font-size: 25px;
+  font-weight: normal;
+  color: #FFB511;
+  padding: 0px 20px 20px 20px;
+  cursor: pointer;
+}
+
+.more-info-btn:hover {
+  letter-spacing: 1px;
 }
 
 #no-forecast-header {
@@ -69,9 +122,14 @@ width: 80%;
 }
 
 .slick-slide {
-opacity: .5;
+  opacity: .5;
 }
 
 .slick-center {
-opacity: 1;
+  border: 5px solid #FFB511;
+  opacity: 1;
+}
+
+.slick-prev:before, .slick-next:before {
+  color: darkslategray;
 }
