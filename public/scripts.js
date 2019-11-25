@@ -1,33 +1,9 @@
-const app = document.getElementById('root')
+const alertDialog = document.getElementById("alert-dialog")
+const alertModal = document.getElementById("alert-modal")
+const noForecastHdr = document.getElementById("no-forecast-header")
+const forecastCarousel = document.getElementById("forecast-carousel")
 
-const appLogo = document.createElement('h1')
-appLogo.setAttribute('class', 'app-logo')
-appLogo.textContent = "PetrCast"
-
-const alertDialog = document.createElement('div')
-alertDialog.setAttribute('class', 'alert-dialog')
-alertDialog.style.display = 'none'
-
-const container = document.createElement('div')
-container.setAttribute('class', 'container')
-
-const darkskyAttribution = document.createElement('a')
-darkskyAttribution.setAttribute('class', 'darksky-logo')
-darkskyAttribution.href = "https://darksky.net/poweredby/"
-darkskyAttribution.text = "Powered by Dark Sky"
-
-const alertModal = document.createElement('div')
-alertModal.setAttribute('class', 'modal')
-alertModal.style.display = 'none'
-
-app.appendChild(appLogo)
-app.appendChild(alertDialog)
-app.appendChild(container)
-app.appendChild(darkskyAttribution)
-
-app.appendChild(alertModal)
-
-//fetch('testdata.json', {        // Use for testing
+//fetch('testData/testdata.json', {        // Use for testing
 fetch('weather', {            // Use for production
     method: 'GET',
     headers: {
@@ -40,53 +16,7 @@ fetch('weather', {            // Use for production
 
 function setWeatherData(data){
     setAlerts(data.alerts)
-    var dailyBlock = data.daily
-
-    dailyBlock.data.forEach(dataPt => {
-        // Create card
-        const card = document.createElement('div')
-        card.setAttribute('class', 'card')
-
-        const dateTxt = document.createElement('h1')
-        dateTxt.textContent = convertDate(dataPt.time)
-
-        const icon = document.createElement('canvas')
-        icon.width = 100
-        icon.height = 100
-        const skycon = new Skycons({color: 'black'})
-        skycon.set(icon, dataPt.icon)
-        skycon.play()
-
-        /*const iconTxt = document.createElement('p')
-        iconTxt.textContent = dataPt.icon*/
-
-        const highTempTxt = document.createElement('p')
-        highTempTxt.textContent = "High Temp.: " + dataPt.temperatureHigh
-
-        const lowTempTxt = document.createElement('p')
-        lowTempTxt.textContent = "Low Temp.: " + dataPt.temperatureLow
-
-        container.appendChild(card)
-        card.appendChild(dateTxt)
-        card.appendChild(icon)
-        //card.appendChild(iconTxt)
-        card.appendChild(highTempTxt)
-        card.appendChild(lowTempTxt)
-        
-    })
-
-    // Init slick carousel
-    $(document).ready(function(){
-        $('.container').slick({
-            centerMode: true,
-            centerPadding: '60px',
-            slidesToShow: 3,
-            dots: true,
-            infinite: false,
-            initialSlide: 0,
-            adaptiveHeight: true
-        });
-        });
+    setForecast(data.daily.data)
 }
 
 function setAlerts(alerts) {
@@ -136,6 +66,59 @@ function setAlerts(alerts) {
     }
 }
 
+function setForecast(data){
+    if (data != null){
+        forecastCarousel.style.display = "block"
+        noForecastHdr.style.display = "none"
+        const skycon = new Skycons({color: 'black'})
+        data.forEach(dataPt => {
+            // Create card
+            const card = document.createElement('div')
+            card.setAttribute('class', 'card')
+
+            const dateTxt = document.createElement('h1')
+            dateTxt.textContent = convertDate(dataPt.time)
+
+            const icon = document.createElement('canvas')
+            icon.setAttribute("class", "weather-icon")
+            skycon.set(icon, dataPt.icon)
+            skycon.play()
+
+            const highTempTxt = document.createElement('p')
+            highTempTxt.textContent = "High Temp.: " + dataPt.temperatureHigh
+
+            const lowTempTxt = document.createElement('p')
+            lowTempTxt.textContent = "Low Temp.: " + dataPt.temperatureLow
+
+            card.appendChild(dateTxt)
+            card.appendChild(icon)
+            card.appendChild(highTempTxt)
+            card.appendChild(lowTempTxt)
+            forecastCarousel.appendChild(card)
+            
+        })
+
+        // Init slick carousel
+        $(document).ready(function(){
+            $('.forecast-carousel').slick({
+                centerMode: true,
+                centerPadding: '60px',
+                slidesToShow: 3,
+                dots: true,
+                infinite: false,
+                initialSlide: 0,
+                adaptiveHeight: true
+            });
+        });
+    }
+    else {
+        forecastCarousel.style.display = "none"
+        noForecastHdr.style.display = "block"
+    }
+    
+}
+
+// Close alert modal by clicking outside box
 window.onclick = function(event){
     if (event.target == alertModal) {
         alertModal.style.display = "none"
