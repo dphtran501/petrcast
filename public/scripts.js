@@ -3,8 +3,8 @@ const alertModal = document.getElementById("alert-modal")
 const noForecastHdr = document.getElementById("no-forecast-header")
 const forecastCarousel = document.getElementById("forecast-carousel")
 
-fetch('testData/testdata.json', {        // Use for testing
-//fetch('weather', {            // Use for production
+//fetch('testData/testdata.json', {        // Use for testing
+fetch('weather', {            // Use for production
     method: 'GET',
     headers: {
         'Content-Type': 'application/json',
