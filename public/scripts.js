@@ -1,10 +1,15 @@
-const alertDialog = document.getElementById("alert-dialog")
-const alertModal = document.getElementById("alert-modal")
+const warningBell = document.getElementById("warning-bell")
+const watchBell = document.getElementById("watch-bell")
+const advisoryBell = document.getElementById("advisory-bell")
+const warningModal = document.getElementById("warning-modal")
+const watchModal = document.getElementById("watch-modal")
+const advisoryModal = document.getElementById("advisory-modal")
+
 const noForecastHdr = document.getElementById("no-forecast-header")
 const forecastCarousel = document.getElementById("forecast-carousel")
 
-//fetch('testData/testdata.json', {        // Use for testing
-fetch('weather', {            // Use for production
+fetch('testData/testdata.json', {        // Use for testing
+//fetch('weather', {            // Use for production
     method: 'GET',
     headers: {
         'Content-Type': 'application/json',
@@ -21,15 +26,10 @@ function setWeatherData(data){
 
 function setAlerts(alerts) {
     if(alerts != null) {
-        const alertModalContent = document.createElement('div')
-        alertModalContent.className = "modal-content"
         alerts.forEach(alert => {
-            // Add alert to alert dialog
-            const alertText = document.createElement('p')
-            alertText.textContent = alert.severity + ": " + alert.title
-            alertDialog.appendChild(alertText)
-
-            // Add alert to modal
+            // Set alert modal content
+            const alertModalContent = document.createElement('div')
+            alertModalContent.className = "modal-content"
             const alertTitle = document.createElement('h1')
             alertTitle.textContent = alert.title
             const alertIssued = document.createElement('h2')
@@ -41,29 +41,53 @@ function setAlerts(alerts) {
             const alertLink = document.createElement('a')
             alertLink.href = alert.uri
             alertLink.text = "See more details..."
-            
+
             alertModalContent.appendChild(alertTitle)
             alertModalContent.appendChild(alertIssued)
             alertModalContent.appendChild(alertExpires)
             alertModalContent.appendChild(alertDescription)
             alertModalContent.appendChild(alertLink)
+
+            // Set alert modal and alert-header based on severity
+            if (alert.severity == "advisory"){
+                alertModalContent.style.borderColor = "yellow"
+                advisoryBell.style.display = 'block'
+                advisoryModal.appendChild(alertModalContent)
+                advisoryModal.style.display = 'block'
+            } 
+            else if (alert.severity == "watch"){
+                alertModalContent.style.borderColor = "darkorange"
+                watchBell.style.display = 'block'
+                watchModal.appendChild(alertModalContent)
+                watchModal.style.display = 'block'
+            }
+            else if (alert.severity == "warning"){
+                alertModalContent.style.borderColor = "red"
+                warningBell.style.display = 'block'
+                warningModal.appendChild(alertModalContent)
+                warningModal.style.display = 'block'
+            }
+
         })
-        
-        alertModal.appendChild(alertModalContent)
-        alertModal.style.display = 'block'
-        alertDialog.style.display = "block"
     }
     else {
-        while(alertDialog.lastChild){
-            alertDialog.removeChild(alertDialog.lastChild)
-        }
-        while(alertModal.lastChild){
-            alertModal.removeChild(alertModal.lastChild)
-        }
+        while(advisoryModal.lastChild) advisoryModal.removeChild(advisoryModal.lastChild)
+        while(watchModal.lastChild) watchModal.removeChild(watchModal.lastChild)
+        while(warningModal.lastChild) warningModal.removeChild(warningModal.lastChild)
 
-        alertModal.style.display = 'none'
-        alertDialog.style.display = "none"
+        advisoryModal.style.display = 'none'
+        watchModal.style.display = 'none'
+        warningModal.style.display = 'none'
+        advisoryBell.style.display = 'none'
+        watchBell.style.display = 'none'
+        warningBell.style.display = 'none'
     }
+}
+
+function showAlertBell(alertBell){
+    if (alertBell == advisoryBell) advisoryModal.style.display = 'block'
+    else if(alertBell == watchBell) watchModal.style.display = 'block'
+    else if (alertBell == warningBell) watchModal.style.display = 'block'
 }
 
 function setForecast(data){
@@ -133,8 +157,8 @@ function setForecast(data){
 
 // Close alert modal by clicking outside box
 window.onclick = function(event){
-    if (event.target == alertModal) {
-        alertModal.style.display = "none"
+    if (event.target.className == "modal") {
+        event.target.style.display = "none"
     }
 }
 
@@ -148,9 +172,8 @@ function convertDate(unixDate){
 function convertDay(unixDate){
     var dateObj = new Date(unixDate * 1000)
     var today = new Date()
+    if (dateObj.getDate() == today.getDate()) return "Today"
     switch (dateObj.getDay()){
-        case today.getDay():
-            return "Today"
         case 0:
             return "Sunday"
         case 1:

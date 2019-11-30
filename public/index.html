@@ -14,12 +14,24 @@
     </head>
 
     <body>
-        <div id="title-header">
+        <div id="header">
+            <div id="suggestion-header">
+                <img id="petr-head-img" src="images/ptr.png" alt="Petr head">
+            </div>
+            <div id="title-header">
                 <h1 id="app-title">PetrCast</h1>
                 <h2 id="app-subtitle">Exclusive Weather for UCI</h2>
+            </div>
+            <div id="alert-header">
+                <img id="warning-bell" class="alert-bell-img" src="images/warning-bell.png" alt="Warning Alert Bell" onclick="showAlertBell(this)">
+                <img id="watch-bell" class="alert-bell-img" src="images/watch-bell.png" alt="Watch Alert Bell" onclick="showAlertBell(this)">
+                <img id="advisory-bell" class="alert-bell-img" src="images/advisory-bell.png" alt="Advisory Alert Bell" onclick="showAlertBell(this)">
+            </div>
         </div>
-        <div id="alert-dialog" class="dialog"></div>
-        <div id="alert-modal" class="modal"></div>
+        <!-- Ensure modal order apperance is warning->watch->advisory -->
+        <div id="advisory-modal" class="modal"></div>
+        <div id="watch-modal" class="modal"></div>
+        <div id="warning-modal" class="modal"></div>
         <div id="forecast-block" class="forecast-block">
             <div id="forecast-carousel" class="forecast-carousel"></div>
             <h2 id="no-forecast-header">NO DATA AVAILABLE</h2>
