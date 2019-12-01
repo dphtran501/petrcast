@@ -147,11 +147,15 @@ body {
 }
 
 .modal-content {
-background-color: #1295D8;
-margin: auto;
-padding: 20px;
-border: 8px solid #FFB511;
-width: 80%;
+  background-color: #1295D8;
+  margin: auto;
+  padding: 20px;
+  border: 8px solid #FFB511;
+  width: 80%;
+  font-family: 'Merriweather Sans', sans-serif;
+  font-size: 23px;
+  font-weight: normal;
+  color: white;
 }
 
 /****** Slick Carousel styles ******/
