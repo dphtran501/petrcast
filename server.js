@@ -19,6 +19,9 @@ app.get('/weather', (req, res) => {
         url: url,
         responseType: 'json'
     }).then(data => res.json(data.data))
+    .catch(err => {
+        console.log(err)
+    })
 })
 
 app.listen(process.env.PORT || 3000, () => {

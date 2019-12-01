@@ -171,3 +171,17 @@ body {
 .slick-prev:before, .slick-next:before {
   color: darkslategray;
 }
+
+/***** Footer styles *****/
+#footer {
+  display: flex;
+  justify-content: flex-end;
+  margin: 30px;
+  max-height: 150px;
+}
+
+#darksky-logo {
+  max-height: 100%;
+  width: auto;
+  float: right;
+}
