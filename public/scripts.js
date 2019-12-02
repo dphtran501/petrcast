@@ -8,8 +8,11 @@ const advisoryModal = document.getElementById("advisory-modal")
 const noForecastHdr = document.getElementById("no-forecast-header")
 const forecastCarousel = document.getElementById("forecast-carousel")
 
-fetch('testData/testdata.json', {        // Use for testing
-//fetch('weather', {            // Use for production
+const addInfoModalsBlock = document.getElementById("forecast-additional-modals-block")
+var addInfoArray = [];
+
+//fetch('testData/testdata.json', {        // Use for testing
+fetch('weather', {            // Use for production
     method: 'GET',
     headers: {
         'Content-Type': 'application/json',
@@ -131,7 +134,39 @@ function setForecast(data){
             card.appendChild(tempBlock)
             card.append(moreInfoBtn)
             forecastCarousel.appendChild(card)
-            
+
+            // Create Additional Info modal
+            const addInfoModal = document.createElement('div')
+            addInfoModal.className = "modal"
+            const addInfoModalContent = document.createElement('div')
+            addInfoModalContent.className = "modal-content"
+            const addInfoModalTitle = document.createElement('h1')
+            addInfoModalTitle.textContent = "Additional Weather Info - " + convertDay(dataPt.time)
+            const precipTitle = document.createElement('h2')
+            precipTitle.textContent = "Precipitation"
+            const precip = document.createElement('p')
+            precip.textContent = Math.round(dataPt.precipProbability * 100) + "%"
+            const humidTitle = document.createElement('h2')
+            humidTitle.textContent = "Humidity"
+            const humid = document.createElement('p')
+            humid.textContent = Math.round(dataPt.humidity * 100) + "%"
+            const windTitle = document.createElement('h2')
+            windTitle.textContent = "Wind"
+            const wind = document.createElement('p')
+            wind.textContent = dataPt.windSpeed + " mph"
+
+            addInfoModalContent.appendChild(addInfoModalTitle)
+            addInfoModalContent.appendChild(precipTitle)
+            addInfoModalContent.appendChild(precip)
+            addInfoModalContent.appendChild(humidTitle)
+            addInfoModalContent.appendChild(humid)
+            addInfoModalContent.appendChild(windTitle)
+            addInfoModalContent.appendChild(wind)
+            addInfoModal.appendChild(addInfoModalContent)
+            addInfoArray.push(addInfoModal)
+            addInfoModalsBlock.appendChild(addInfoModal)
+
+            moreInfoBtn.onclick = function() {(seeAddInfo(addInfoModal))}
         })
 
         // Init slick carousel
@@ -151,8 +186,18 @@ function setForecast(data){
     else {
         forecastCarousel.style.display = "none"
         noForecastHdr.style.display = "block"
+        while (addInfoModalsBlock.lastChild) 
+            addInfoModalsBlock.removeChild(addInfoModalsBlock.lastChild)
+        addInfoArray.length = 0
     }
     
+}
+
+function seeAddInfo(modal) {
+    addInfoArray.forEach(addInfoModal => {
+        if (addInfoModal == modal) 
+            addInfoModal.style.display = "block"
+    })
 }
 
 // Close alert modal by clicking outside box
